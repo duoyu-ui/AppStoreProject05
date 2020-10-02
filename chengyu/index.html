@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>成语接龙机器人</title>
+		<style type="text/css">
+			body,div,span,input{
+				margin: 0px;
+				padding: 0px;
+			}
+			body{
+				background-color: rgba(215, 215, 215, 1);
+			}
+			#box{
+				margin: 1vh auto;
+				width: 430px;
+				height: 97vh;
+				border: 3px solid rgba(0, 0, 0, 1);
+				border-radius: 6px;
+				box-shadow: 4px 3px 7px rgba(0, 0, 0, 0.7);
+				overflow: hidden;
+			}
+			/*head start*/
+			#box .head{
+				width: 430px;
+				height: 9vh;
+				color: rgba(255, 255, 255, 1);
+				font-size: 7vh;
+				font-family: "楷体";
+				text-align: center;
+				text-shadow: 3px 4px 7px rgba(255, 255, 255, 0.5);
+				background-color: rgba(0, 0, 0, 0.7);
+				box-shadow: 4px 3px 7px rgba(0, 0, 0, 1);
+			}
+			/*head end*/
+			
+			/*middle start*/
+			#screen{
+				width: 430px;
+				height: 81vh;
+				background-color: rgba(255, 255, 255, 0.5);
+				overflow: auto;
+			}
+			/*头像*/
+			#screen .header{
+				width: 36px;
+				height: 36px;
+				background-color: rgba(255, 165, 0, 1);
+				border-radius: 9px;
+			}
+			/*文本框*/
+			#screen [class$="send"]{
+				width: 300px;
+				position: relative;
+			}
+			#screen [class$="arrow"]{
+				border: 8px solid transparent;
+				position: absolute;
+				top: 10px;
+				z-index: 99;
+			}
+			#screen [class$="text"]{
+				padding: 9px;
+				font-family: "楷体";
+				background: rgb(172,218,71);
+				border-radius: 6px;
+				box-sizing: border-box;
+				position: absolute;
+			}
+			/*对方*/
+			#screen .other-side{
+				margin: 6px auto;
+				overflow: -webkit-paged-x;
+				float: left;
+			}
+			#screen .other-side .left-send{
+				float: left;
+			}
+			#screen .other-side .left-send .left-arrow{
+				border-right-color: rgb(172,218,71);
+				left: 4px;
+			}
+			#screen .other-side .left-send .left-text{
+				left: 20px;
+			}
+			/*自己*/
+			#screen .myself{
+				margin: 6px auto;
+				overflow: -webkit-paged-x;
+				float: right;
+			}
+			#screen .myself .right-send{
+				float: right;
+			}
+			#screen .myself .right-send .right-arrow{
+				border-left-color: rgb(172,218,71);
+				right: 4px;
+			}
+			#screen .myself .right-send .right-text{
+				right: 20px;
+			}
+			/*滚动条*/
+			#screen::-webkit-scrollbar{
+				width: 4px;
+			}
+			#screen::-webkit-scrollbar-track{
+				box-shadow: inset 0 0 4px rgba(0,0,0,0.3);
+				border-radius: 12px;
+			}
+			#screen::-webkit-scrollbar-thumb{
+				background-color: rgba(75, 180, 225, 1);
+				border-radius: 12px;
+			}
+			/*middle end*/
+			
+			/*foot start*/
+			#box .foot{
+				width: 430px;
+				height: 7vh;
+				background-color: rgba(0, 0, 0, 0.5);
+				display: flex;
+				box-shadow: 3px -1px 9px rgba(0, 0, 0, 1);
+			}
+			#box .foot #input{
+				margin: auto;
+				width: 321px;
+				height: 34px;
+				font-size: 24px;
+				font-family: "楷体";
+				border: 1px solid transparent;
+				display: block;
+				border-radius: 6px;
+				box-shadow: 4px 3px 12px rgba(0, 0, 0, 1);
+			}
+			#box .foot #but{
+				margin: auto;
+				width: 64px;
+				height: 36px;
+				font-size: 24px;
+				font-family: "楷体";
+				text-align: center;
+				line-height: 36px;
+				background-color: rgba(134, 215, 43, 1);
+				display: block;
+				border-radius: 3px;
+				box-shadow: 4px 3px 12px rgba(0, 0, 0, 1);
+				cursor: pointer;
+			}
+			/*foot end*/
+		</style>
+	</head>
+	<body>
+		<div id="box">
+			<!--head-->
+			<div class="head">成语接龙</div>
+			<!--middle-->
+			<div id="screen">
+				<!-- 对方 -->
+				<div class="other-side">
+					<div class="header" style="float: left;"></div>
+					<div class="left-send">
+						<div class="left-arrow"></div>
+						<div class="left-text">
+							来啦,老弟(老妹儿)(*^3^*)<br/>
+							输入"开始"来局成语接龙吧(~O~)<br/>
+							告诉你个小秘密,ctrl+enter可以快捷发送哦(^-^)
+						</div>
+					</div>
+				</div>
+				<!-- 自己 -->
+				<div class="myself">
+					<div class="header" style="float: right;"></div>
+					<div class="right-send">
+						<div class="right-arrow"></div>
+						<div class="right-text">
+							哈哈哈...
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--foot-->
+			<div class="foot">
+				<input id="input" type="text" autofocus="autofocus" />
+				<div id="but">发送</div>
+			</div>
+		</div>
+		<!--引入成语库-->
+		<script type="text/javascript" src="js/db.js" ></script>
+		<!--script-->
+		<script type="text/javascript">
+			var screen = document.getElementById("screen");
+			var input = document.getElementById("input");
+			var but = document.getElementById("but");
+			var out = "";
+			var power = false;
+			
+			function main(){
+				if(input.value==null || input.value==""){
+					reply("请输入有意义的内容！！！");
+					input.focus();
+					power = false;
+				}else if(input.value == "开始"){
+					var num = Math.ceil(Math.random()*100);
+					out = listWords[num];
+					send(input.value);
+					reply(out);
+					power = true;
+				}else if(power){
+					judge(input.value);
+				}else{
+					send(input.value);
+					reply("输入'开始'才能成语接龙哦(^-^)");
+					power = false;
+				}
+			}
+			
+			function send(paramet){
+				screen.innerHTML += "<div class='myself'>"
+										+"<div class='header' style='float: right;'></div>"
+										+"<div class='right-send'>"
+											+"<div class='right-arrow'></div>"
+											+"<div class='right-text'>"
+												+paramet
+											+"</div>"
+										+"</div>"
+									+"</div>";
+				
+				input.value = "";
+				input.focus();
+				screen.lastChild.scrollIntoView();//将最后一个对话框滚动至可见区域
+			}
+			
+			function reply(paramet){
+				screen.innerHTML += "<div class='other-side'>"
+											+"<div class='header' style='float: left;'></div>"
+											+"<div class='left-send'>"
+												+"<div class='left-arrow'></div>"
+												+"<div class='left-text'>"
+													+paramet
+												+"</div>"
+											+"</div>"
+										+"</div>";
+				screen.lastChild.scrollIntoView();//将最后一个对话框滚动至可见区域
+			}
+			
+			//鼠标点击发送
+			but.onclick = function(){
+				main();
+			}
+			
+			//快捷键发送
+			document.onkeypress = function(event){
+				var e = event || window.event;
+				var key = e.keyCode || e.which;
+				if(key == 10){//同时按下ctrl和enter
+					main();
+				}
+			}
+			
+			function judge(str){
+				if(str.length == 4){
+					if(listWords.indexOf(str) == -1){
+						send(str);
+						reply("喂喂喂,不准耍赖啊...");
+						power = false;
+					}else{
+						if(out.charAt(3) == str.charAt(0)){
+							var start = listWords.join("").indexOf(str.charAt(3));
+							var end = start + 4;
+							if(start%4 == 0){
+								out = listWords.join("").substring(start,end);
+								send(str);
+								reply(out);
+								power = true;
+							}else{
+								send(str);
+								reply("是在下输了...");
+								power = false;
+							}
+						}else{
+							send(str);
+							reply("哈哈哈,你输了");
+							power = false;
+						}
+					}
+				}else{
+					send(str);
+					reply("游戏中不要开小差啊！");
+					power = false;
+				}
+			}
+			
+		</script>
+	</body>
+</html>
